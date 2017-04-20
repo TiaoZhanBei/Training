@@ -1,6 +1,7 @@
 import os
 from numpy import *
 from scipy import misc
+from PIL import Image
 
 
 def scan_files(directory, prefix=None, postfix='.jpg'):
@@ -18,11 +19,14 @@ def scan_files(directory, prefix=None, postfix='.jpg'):
     return files_list
 
 
-def get_photo_data(file_list):
+def get_photo_data(file_list, photo_size=(100, 100)):
     data = []
     for file in file_list:
-        im = misc.imread(file)
-        #print(im.shape, im.dtype)
-        #im = im.reshape((1, im.size))
+        im = Image.open(file)
+        thu = im.resize(photo_size)
+        thu.save('temp.jpg')
+        im = misc.imread('temp.jpg')
+        #temp = misc.imresize(im, photo_size)
+        #print(temp.size)
         data.append(im)
     return data
