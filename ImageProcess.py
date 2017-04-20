@@ -27,11 +27,12 @@ def image_norm(image, image_size):
 def filename_to_label(file):
     lst = ['梅','菊','竹','草','山','花','叶','柳',
     '月','阳','水','雪']
-    name = os.path.basename(file).split('.')[0]
+    name = os.path.basename(file)
     label = np.zeros(len(lst))
     for i in range(len(lst)):
         if lst[i] in name:
             label[i] = 1
+            print(lst[i])
     return  label
 
 def get_photo_data(file_list, image_size=(224, 224)):
@@ -67,8 +68,28 @@ def get_photo_data(file_list, image_size=(224, 224)):
             work(_)
     data = np.array(data)
     Label = np.array(Label)
+    assert data.shape[0] == Label.shape[0]
     print(data.shape, Label.shape)
     return data, Label
 
-if __name__ == '__main__':
+def load_data():
+    import random
     X, Y = get_photo_data(scan_files(r'../GetPhotoFromBaidu/pictures'))
+    Len = X.shape[0]
+    index = [i for i in range(Len)]
+    random.shuffle(index)
+    X = X[index]
+    Y = Y[index]
+    t_size = int(Len * 0.8)
+    x_train = X[:t_size,:,:,:]
+    x_test = X[t_size+1:,:,:,:]
+    y_train = Y[:t_size,:]
+    y_test = Y[t_size+1:,:]
+    return (x_train, y_train), (x_test, y_test)
+
+if __name__ == '__main__':
+    (x_train, y_train), (x_test, y_test) = load_data()
+    print(x_train.shape)
+    print(y_train.shape)
+    print(x_test.shape)
+    print(y_test.shape)
