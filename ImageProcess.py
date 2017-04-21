@@ -1,6 +1,5 @@
 import os
 import numpy as np
-import cv2
 from skimage import io, transform, img_as_ubyte
 import threading
 
@@ -74,7 +73,11 @@ def get_photo_data(file_list, image_size=(224, 224)):
 
 def load_data():
     import random
-    X, Y = get_photo_data(scan_files(r'../GetPhotoFromBaidu/pictures'))
+    if os.path.exists('X.npy') and os.path.exists('Y.npy'):
+        X = np.load('X.npy')
+        Y = np.load('Y.npy')
+    else:
+        X, Y = get_photo_data(scan_files(r'../GetPhotoFromBaidu/pictures'))
     Len = X.shape[0]
     index = [i for i in range(Len)]
     random.shuffle(index)
