@@ -48,6 +48,8 @@ def get_photo_data(file_list, image_size=(224, 224)):
         except:
             print('Load', file, 'fail')
             return
+        if img.shape != (image_size[0], image_size[1], 3):
+            return
         lock.acquire()
         data.append(img)
         Label.append(label)
@@ -78,6 +80,8 @@ def load_data():
         Y = np.load('Y.npy')
     else:
         X, Y = get_photo_data(scan_files(r'../GetPhotoFromBaidu/pictures'))
+        np.save('X.npy', X)
+        np.save('Y.npy', Y)
     Len = X.shape[0]
     index = [i for i in range(Len)]
     random.shuffle(index)
