@@ -8,7 +8,7 @@ GPU run command with Theano backend (with TensorFlow, the GPU is automatically u
 from __future__ import print_function
 from keras.preprocessing.image import ImageDataGenerator
 from keras.utils import np_utils
-from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping, TensorBoard
+from keras.callbacks import ReduceLROnPlateau, CSVLogger, EarlyStopping, TensorBoard, ModelCheckpoint
 
 import ImageProcess
 import numpy as np
@@ -19,6 +19,7 @@ lr_reducer = ReduceLROnPlateau(factor=np.sqrt(0.1), cooldown=0, patience=5, min_
 early_stopper = EarlyStopping(min_delta=0.0001, patience=10)
 csv_logger = CSVLogger('resnet.csv')
 tensor_board = TensorBoard(log_dir='./logs', histogram_freq=0)
+checkpointer = ModelCheckpoint(filepath="weights.hdf5", verbose=1, save_best_only=True)
 
 batch_size = 64
 nb_classes = 12
@@ -60,7 +61,7 @@ if not data_augmentation:
               validation_data=(X_test, Y_test),
               shuffle=True,
               # callbacks=[lr_reducer, early_stopper, csv_logger])
-              callbacks=[lr_reducer, csv_logger, tensor_board])
+              callbacks=[lr_reducer, csv_logger, tensor_board, checkpointer])
 else:
     print('Using real-time data augmentation.')
     # This will do preprocessing and realtime data augmentation:
@@ -85,4 +86,4 @@ else:
                         steps_per_epoch=X_train.shape[0] // batch_size,
                         validation_data=(X_test, Y_test),
                         epochs=nb_epoch, verbose=1, max_q_size=100,
-                        callbacks=[lr_reducer, early_stopper, csv_logger])
+                        callbacks=[lr_reducer, early_stopper, csv_logger, checkpointer])
