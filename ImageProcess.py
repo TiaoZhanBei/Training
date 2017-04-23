@@ -38,7 +38,6 @@ def get_photo_data(file_list, image_size=(224, 224)):
     data, Label = [], []
     source = file_list
     lock = threading.Lock()
-    # for file in file_list:
     def work(i):
         file = source.pop(0)
         try:
@@ -92,6 +91,13 @@ def load_data():
     x_test = X[t_size+1:,:,:,:]
     y_train = Y[:t_size,:]
     y_test = Y[t_size+1:,:]
+
+    try:
+        os.mkdir('overview')
+    except:
+        pass
+    for i in range(10):
+        io.imsave('overview/' + str(i) + '.jpg', X[i,:,:,:])
     return (x_train, y_train), (x_test, y_test)
 
 if __name__ == '__main__':
